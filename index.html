@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upgrade Now or Wait? - Business English Lesson</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- React & ReactDOM -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    
+    <!-- Babel -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <!-- Tailwind Config & Custom CSS -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        bgLight: '#F4F7FB',
+                        navy: '#102A43',
+                        primary: '#1677FF',
+                        cyanAccent: '#24C7E5',
+                        teal: '#12B8A6',
+                        purpleAccent: '#8B5CF6',
+                        success: '#7AC943',
+                        error: '#FF647C',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    transitionProperty: {
+                        'height': 'height',
+                        'spacing': 'margin, padding',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #F4F7FB; color: #102A43; }
+        
+        /* 3D Flip Card Styles */
+        .perspective-1000 { perspective: 1000px; }
+        .transform-style-3d { transform-style: preserve-3d; }
+        .backface-hidden { backface-visibility: hidden; }
+        .rotate-y-180 { transform: rotateY(180deg); }
+        .flip-card-inner {
+            transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
+            transform-style: preserve-3d;
+        }
+        .flip-card.flipped .flip-card-inner { transform: rotateY(180deg); }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #F4F7FB; }
+        ::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94A3B8; }
+
+        /* Tooltip */
+        .vocab-tooltip .tooltip-text {
+            visibility: hidden;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .vocab-tooltip:hover .tooltip-text, .vocab-tooltip:focus .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const LESSON_SECTIONS = [
+            'Overview', 'Warm-up', 'Vocabulary', 'Vocabulary Practice', 
+            'Speed Reading', 'Main Reading', 'Reading Comprehension', 
+            'Grammar Focus', 'Grammar Practice', 'Speaking Challenge'
+        ];
+
+        const VOCABULARY = [
+            { word: 'upgrade', def: 'to improve equipment, software, or a system by replacing it with a newer version.', ex: 'The company plans to upgrade its network equipment next quarter.', type: 'verb' },
+            { word: 'downtime', def: 'a period when a system or service is unavailable.', ex: 'The maintenance could cause two hours of downtime on Saturday.', type: 'noun' },
+            { word: 'run over budget', def: 'to cost more money than originally planned.', ex: 'The infrastructure project ran over budget because hardware prices increased.', type: 'phrase' },
+            { word: 'phase out', def: 'to gradually stop using something and replace it.', ex: 'IT plans to phase out the old servers over the next six months.', type: 'phrasal verb' },
+            { word: 'maintenance costs', def: 'money spent keeping equipment or systems working correctly.', ex: 'Our maintenance costs have increased significantly this year.', type: 'noun phrase' },
+            { word: 'roll out', def: 'to introduce a new system, product, or service gradually or officially.', ex: 'The team will roll out the new platform department by department.', type: 'phrasal verb' },
+            { word: 'bottleneck', def: 'a point in a system or process that slows everything else down.', ex: 'The old storage system has become a serious bottleneck.', type: 'noun' },
+            { word: 'allocate', def: 'to officially give money, resources, or time to a particular purpose.', ex: 'Management allocated $80,000 to infrastructure improvements.', type: 'verb' },
+            { word: 'cost-effective', def: 'producing good results without costing more money than necessary.', ex: 'Replacing the equipment gradually may be more cost-effective.', type: 'adjective' },
+            { word: 'keep up with', def: 'to develop or progress at the same speed as something else.', ex: 'Our infrastructure needs to keep up with the company\'s growth.', type: 'phrasal verb' }
+        ];
+
+        const VOCAB_PRACTICE_Q = [
+            { q: "We need to ______ some of our network equipment because it no longer meets our requirements.", a: "upgrade", d: ["allocate", "phase out", "keep up with"] },
+            { q: "The company has decided to gradually ______ several older servers.", a: "phase out", d: ["roll out", "allocate", "upgrade"] },
+            { q: "The network is becoming a ______ because it cannot process all the traffic efficiently.", a: "bottleneck", d: ["downtime", "upgrade", "rollout"] },
+            { q: "Management decided to ______ more money to cybersecurity infrastructure.", a: "allocate", d: ["keep up with", "phase out", "run over budget"] },
+            { q: "The new solution is slightly more expensive initially, but it should be more ______ in the long term.", a: "cost-effective", d: ["over budget", "phased out", "allocated"] },
+            { q: "We need to modernize our systems to ______ the company's rapid growth.", a: "keep up with", d: ["phase out", "run over budget", "allocate"] },
+            { q: "The migration will happen on Sunday to minimize ______ for employees.", a: "downtime", d: ["bottlenecks", "allocation", "upgrades"] },
+            { q: "The project could ______ if we need additional equipment.", a: "run over budget", d: ["keep up with", "phase out", "roll out"] },
+            { q: "The company plans to ______ the new network solution in three stages.", a: "roll out", d: ["allocate", "keep up with", "run over budget"] },
+            { q: "Our ______ are increasing because the equipment requires frequent repairs.", a: "maintenance costs", d: ["bottlenecks", "downtimes", "rollouts"] },
+            { q: "Replacing everything immediately isn't financially possible, so IT will ______ the old equipment gradually.", a: "phase out", d: ["allocate", "upgrade", "keep up with"] },
+            { q: "The database server has become a performance ______ during peak hours.", a: "bottleneck", d: ["downtime", "rollout", "budget"] },
+            { q: "The finance department has ______ additional funds to the infrastructure project.", a: "allocated", d: ["phased out", "kept up with", "run over"] },
+            { q: "The team will ______ the security update to 200 employees next week.", a: "roll out", d: ["phase out", "allocate", "run over budget"] },
+            { q: "The migration caused unexpected ______ for approximately 30 minutes.", a: "downtime", d: ["allocation", "upgrades", "bottlenecks"] },
+            { q: "A cloud solution might be more ______ than buying additional physical servers.", a: "cost-effective", d: ["over budget", "phased out", "allocated"] },
+            { q: "The original budget was $120,000, but unexpected licensing expenses caused the project to ______.", a: "run over budget", d: ["keep up with", "roll out", "phase out"] },
+            { q: "Several systems require an ______ because the current versions are no longer supported.", a: "upgrade", d: ["allocation", "bottleneck", "downtime"] },
+            { q: "Our current capacity won't ______ demand if the number of users continues to increase.", a: "keep up with", d: ["roll out", "allocate", "phase out"] },
+            { q: "High ______ can sometimes make replacing old equipment cheaper than continuing to repair it.", a: "maintenance costs", d: ["downtimes", "rollouts", "allocations"] }
+        ];
+
+        const READING_COMP_Q = [
+            { type: 'open', q: "Why hasn't Orion immediately replaced all its old infrastructure?", a: "It would consume most of the available budget." },
+            { type: 'tf', q: "True or False: Some infrastructure is more than seven years old.", a: "True" },
+            { type: 'open', q: "What has happened to maintenance costs?", a: "They have increased / They are rising." },
+            { type: 'mc', q: "Which area is currently causing the biggest concern?", a: "storage infrastructure", d: ["network security", "employee training", "cloud migration"] },
+            { type: 'fill', q: "Demand has increased by almost ______ in two years.", a: "30%" },
+            { type: 'tf', q: "True or False: The storage environment has already stopped working completely.", a: "False" },
+            { type: 'open', q: "What problem are employees experiencing during busy periods?", a: "Slower access." },
+            { type: 'mc', q: "What may happen if company growth continues?", a: "Infrastructure may struggle with demand.", d: ["Employees will stop working.", "The budget will be doubled.", "Hardware prices will drop."] },
+            { type: 'fill', q: "The manager proposes completing the project in ______ stages.", a: "three" },
+            { type: 'open', q: "Does the IT manager want to replace everything immediately? (Follow-up: What does he propose instead?)", a: "No. He proposes a three-stage project to gradually phase out old equipment." },
+            { type: 'mc', q: "What does “phase out” mean in Paragraph 3?", a: "gradually stop using something", d: ["immediately destroy", "sell to another company", "upgrade immediately"] },
+            { type: 'open', q: "Which equipment would they replace first?", a: "The oldest equipment." },
+            { type: 'tf', q: "True or False: The entire project must be financed this year.", a: "False" },
+            { type: 'mc', q: "Why does the manager prefer the gradual approach?", a: "It controls costs and reduces downtime risk.", d: ["It uses up the entire budget quickly.", "It is what the vendor recommended.", "It requires fewer IT staff members."] },
+            { type: 'fill', q: "Management could ______ part of this year's budget to stage one.", a: "allocate" },
+            { type: 'open', q: "What could happen to hardware prices next year?", a: "They could increase." },
+            { type: 'tf', q: "True or False: A staged project is guaranteed to remain within budget.", a: "False" },
+            { type: 'mc', q: "What is one danger of delaying the whole project?", a: "An important system could fail first.", d: ["The company might grow too fast.", "Employees might work faster.", "Storage demand might decrease."] },
+            { type: 'open', q: "Which two priorities does management need to balance?", a: "Immediate costs and longer-term operational risk." },
+            { type: 'mc', q: "Which statement best describes the manager's strategy?", a: "Modernize gradually while managing cost and risk.", d: ["Replace everything regardless of budget.", "Wait until everything breaks down completely.", "Move everything to the cloud immediately."] }
+        ];
+
+        const GRAMMAR_PRACTICE_Q = [
+            { q: "If we ______ the upgrade, maintenance costs will continue to rise.", a: "delay", d: ["will delay", "delayed"] },
+            { q: "If the server fails, users ______ access to the platform.", a: "may lose", d: ["may lost", "losing"] },
+            { q: "If demand ______, we will need additional capacity.", a: "increases", d: ["will increase", "increasing"] },
+            { q: "If we move the migration to Sunday, we ______ disruption.", a: "could reduce", d: ["could reduced", "reducing"] },
+            { q: "If the project runs over budget, management ______ additional funding.", a: "may request", d: ["may requested", "requesting"] },
+            { q: "If we ______ the oldest equipment first, we can reduce the immediate cost.", a: "replace", d: ["will replace", "replaced"] },
+            { q: "If hardware prices rise, the second phase ______ more expensive.", a: "could become", d: ["could became", "becoming"] },
+            { q: "If we don't increase capacity, the system ______ with future demand.", a: "may not keep up", d: ["may not keeps up", "doesn't keeping up"] },
+            { q: "If management ______ the budget, we will start next month.", a: "approves", d: ["will approve", "approving"] },
+            { q: "If we roll out everything simultaneously, there ______ more operational risk.", a: "may be", d: ["may being", "is may"] },
+            { q: "If maintenance costs ______ rising, replacement will become more attractive.", a: "continue", d: ["will continue", "continues to"] },
+            { q: "If the vendor reduces the price, we ______ more equipment this year.", a: "could purchase", d: ["could purchased", "purchasing"] },
+            { q: "If the migration ______ longer than expected, users may experience downtime.", a: "takes", d: ["will take", "taking"] },
+            { q: "If we phase out the equipment gradually, the project ______ easier to manage.", a: "will be", d: ["will being", "is will be"] },
+            { q: "If we ______ now, we may avoid a more expensive emergency replacement later.", a: "invest", d: ["will invest", "invested"] }
+        ];
+
+        const SPEAKING_Q = [
+            "Your maintenance costs have increased by 20%. What would you check first?",
+            "A server works correctly but is eight years old. Would you replace it? Why or why not?",
+            "Your infrastructure budget is reduced by 15%. Which projects should get priority?",
+            "A project is already 10% over budget. What should the manager do?",
+            "A vendor recommends replacing equipment earlier than expected. What information would you request before making a decision?",
+            "Would you rather replace infrastructure gradually or complete one large migration? Why?",
+            "A system is becoming a bottleneck, but users can still work. How urgent is the problem?",
+            "Finish the idea: If our infrastructure cannot keep up with demand, ...",
+            "Management asks you to postpone an important upgrade for one year. What risks would you explain?",
+            "What factors do you normally consider before allocating money to an IT project?",
+            "Would you accept planned downtime if it reduced long-term infrastructure risk? Why?",
+            "Finish the idea: If maintenance costs continue increasing, ...",
+            "A vendor offers a cheaper solution, but you are less familiar with the technology. What would you evaluate?",
+            "Which is more important when selecting infrastructure: initial price or long-term cost? Why?",
+            "An infrastructure project is technically successful but runs 20% over budget. Would you still consider it successful?",
+            "What infrastructure problems are difficult to explain to non-technical managers?",
+            "Agree or disagree: “If the system still works, there is no reason to replace it.” Explain.",
+            "How can an Infrastructure Manager demonstrate the business value of an upgrade?",
+            "You can fund only one project:\n• A — improve performance\n• B — reduce security risk\nWhich gets priority? What information would affect your decision?",
+            "Finish the idea: We should never roll out a major infrastructure change without...",
+            "How do you decide whether a solution is truly cost-effective?",
+            "If a project may run over budget, when should management be informed?",
+            "Your users complain about performance, but monitoring tools show normal results. What would you investigate?",
+            "Which infrastructure investment can save money in the long term even if it is expensive initially? Explain your example."
+        ];
+
+        const shuffleArray = (array) => {
+            const newArray = [...array];
+            for (let i = newArray.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+            }
+            return newArray;
+        };
+
+        const Icon = ({ name, className = "w-5 h-5" }) => {
+            const icons = {
+                menu: <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />,
+                home: <path strokeLinecap="round" strokeLinejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />,
+                chevronLeft: <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />,
+                chevronRight: <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />,
+                check: <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />,
+                reset: <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />,
+                play: <><path strokeLinecap="round" strokeLinejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" /><path strokeLinecap="round" strokeLinejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></>,
+                pause: <path strokeLinecap="round" strokeLinejoin="round" d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z" />,
+                eye: <><path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></>,
+                eyeOff: <path strokeLinecap="round" strokeLinejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />,
+                warning: <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            };
+            return (
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={className}>
+                    {icons[name] || icons.check}
+                </svg>
+            );
+        };
+
+        const Button = ({ onClick, children, variant = 'primary', icon, disabled, className="" }) => {
+            const baseStyle = "flex items-center justify-center gap-2 px-6 py-3 rounded-lg font-semibold transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-sm";
+            const variants = {
+                primary: "bg-primary text-white hover:bg-blue-600 active:bg-blue-700",
+                secondary: "bg-white text-navy border border-gray-200 hover:bg-gray-50 hover:border-gray-300",
+                danger: "bg-white text-error border border-error hover:bg-red-50",
+                success: "bg-success text-white hover:bg-green-600",
+                ghost: "bg-transparent text-navy hover:bg-gray-100 shadow-none px-3"
+            };
+            return (
+                <button onClick={onClick} disabled={disabled} className={`${baseStyle} ${variants[variant]} ${className}`}>
+                    {icon && <Icon name={icon} />}
+                    {children}
+                </button>
+            );
+        };
+
+        const Card = ({ children, className="" }) => (
+            <div className={`bg-white rounded-xl shadow-md border border-gray-100 p-8 ${className}`}>
+                {children}
+            </div>
+        );
+
+        const Modal = ({ isOpen, title, message, onConfirm, onCancel }) => {
+            if (!isOpen) return null;
+            return (
+                <div className="fixed inset-0 bg-navy/50 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
+                    <div className="bg-white rounded-xl shadow-2xl p-6 max-w-md w-full animate-fade-in-up">
+                        <h3 className="text-xl font-bold text-navy mb-2">{title}</h3>
+                        <p className="text-gray-600 mb-6">{message}</p>
+                        <div className="flex justify-end gap-3">
+                            <Button variant="secondary" onClick={onCancel}>Cancel</Button>
+                            <Button variant="danger" onClick={onConfirm}>Confirm Reset</Button>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const WarmUp = ({ onComplete }) => {
+            const [qIndex, setQIndex] = React.useState(0);
+            const questions = [
+                { q: "When your department receives extra money, what usually gets priority: new projects, maintenance, or something else?", f: "Who normally influences that decision?" },
+                { q: "What can happen when a company continues using technology that still works but is getting old?", f: "When does this become a serious problem?" },
+                { q: "Which is usually more difficult in IT: getting approval for a new project or explaining why an existing system needs more investment?", f: "Why?" }
+            ];
+
+            React.useEffect(() => {
+                if (qIndex === questions.length - 1) onComplete();
+            }, [qIndex]);
+
+            return (
+                <div className="flex flex-col h-full max-w-4xl mx-auto mt-10">
+                    <Card className="flex-grow flex flex-col justify-center min-h-[400px]">
+                        <div className="text-center mb-4 text-sm font-bold text-gray-400 tracking-widest uppercase">Discussion {qIndex + 1} of {questions.length}</div>
+                        <h2 className="text-3xl font-bold text-navy text-center mb-8 leading-relaxed">
+                            {questions[qIndex].q}
+                        </h2>
+                        <div className="bg-bgLight p-6 rounded-lg text-center mx-auto max-w-2xl border border-gray-100">
+                            <span className="text-sm font-semibold text-primary uppercase tracking-wider block mb-2">Follow-up</span>
+                            <p className="text-xl text-navy/80 italic">{questions[qIndex].f}</p>
+                        </div>
+                    </Card>
+                    <div className="flex justify-between mt-8">
+                        <Button variant="secondary" icon="chevronLeft" onClick={() => setQIndex(p => Math.max(0, p - 1))} disabled={qIndex === 0}>Previous</Button>
+                        <Button variant="secondary" onClick={() => setQIndex(p => Math.min(questions.length - 1, p + 1))} disabled={qIndex === questions.length - 1}>Next <Icon name="chevronRight" /></Button>
+                    </div>
+                </div>
+            );
+        };
+
+        const Vocabulary = ({ onComplete }) => {
+            const [index, setIndex] = React.useState(0);
+            const [isFlipped, setIsFlipped] = React.useState(false);
+
+            React.useEffect(() => { setIsFlipped(false); }, [index]);
+            React.useEffect(() => { if (index === VOCABULARY.length - 1 && isFlipped) onComplete(); }, [index, isFlipped]);
+
+            const next = () => setIndex(p => Math.min(VOCABULARY.length - 1, p + 1));
+            const prev = () => setIndex(p => Math.max(0, p - 1));
+
+            return (
+                <div className="flex flex-col items-center max-w-4xl mx-auto mt-4">
+                    <div className="text-gray-500 mb-6 font-medium">Card {index + 1} / {VOCABULARY.length}</div>
+                    
+                    <div className="w-full h-96 perspective-1000 mb-8 cursor-pointer" onClick={() => setIsFlipped(!isFlipped)}>
+                        <div className={`w-full h-full relative flip-card-inner rounded-2xl shadow-xl border border-gray-200 ${isFlipped ? 'rotate-y-180' : ''}`}>
+                            {/* Front */}
+                            <div className="absolute w-full h-full bg-white rounded-2xl backface-hidden flex items-center justify-center">
+                                <h2 className="text-5xl font-bold text-navy">{VOCABULARY[index].word}</h2>
+                                <div className="absolute bottom-6 text-sm text-gray-400">Click to flip</div>
+                            </div>
+                            {/* Back */}
+                            <div className="absolute w-full h-full bg-navy rounded-2xl backface-hidden rotate-y-180 p-10 flex flex-col justify-center text-white">
+                                <span className="inline-block px-3 py-1 bg-primary/20 text-cyanAccent rounded-full text-sm font-semibold w-max mb-6">
+                                    {VOCABULARY[index].type}
+                                </span>
+                                <p className="text-2xl mb-8 leading-relaxed"><span className="text-gray-400 font-semibold mr-2">Definition:</span>{VOCABULARY[index].def}</p>
+                                <div className="bg-white/10 p-6 rounded-lg border border-white/5">
+                                    <p className="text-lg italic font-light"><span className="text-cyanAccent font-semibold not-italic mr-2">Example:</span>"{VOCABULARY[index].ex}"</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="flex items-center gap-6 w-full justify-center">
+                        <Button variant="secondary" icon="chevronLeft" onClick={(e) => { e.stopPropagation(); prev(); }} disabled={index === 0}>Previous</Button>
+                        <Button variant="primary" onClick={(e) => { e.stopPropagation(); setIsFlipped(!isFlipped); }}>Flip Card</Button>
+                        <Button variant="secondary" onClick={(e) => { e.stopPropagation(); next(); }} disabled={index === VOCABULARY.length - 1}>Next <Icon name="chevronRight" /></Button>
+                    </div>
+                </div>
+            );
+        };
+
+        const QuizEngine = ({ questions, state, updateState, onComplete, onReset }) => {
+            const { index, answers, randomizedOptions } = state;
+            const currentQ = questions[index];
+
+            // Initialize or retrieve randomized options for current question
+            const currentOptions = randomizedOptions[index] || [];
+            
+            if (currentOptions.length === 0) {
+                 const opts = shuffleArray([currentQ.a, ...currentQ.d]);
+                 updateState({ randomizedOptions: { ...randomizedOptions, [index]: opts } });
+                 return null; // Wait for state update
+            }
+
+            const handleAnswer = (opt) => {
+                const isCorrect = opt === currentQ.a;
+                const newAnswers = { ...answers, [index]: { choice: opt, correct: isCorrect } };
+                updateState({ answers: newAnswers });
+                if (Object.keys(newAnswers).length === questions.length) onComplete();
+            };
+
+            const isAnswered = !!answers[index];
+            const isCorrect = isAnswered && answers[index].correct;
+
+            return (
+                <div className="max-w-4xl mx-auto mt-4">
+                     <div className="flex justify-between items-center mb-6">
+                        <span className="text-gray-500 font-medium">Question {index + 1} / {questions.length}</span>
+                        {Object.keys(answers).length === questions.length && (
+                             <span className="text-success font-bold bg-green-50 px-3 py-1 rounded-full">Completed</span>
+                        )}
+                    </div>
+
+                    <Card className="mb-8 min-h-[300px] flex flex-col">
+                        <h3 className="text-2xl font-semibold text-navy leading-relaxed mb-8 flex-grow">
+                            {currentQ.q.split('______').map((part, i, arr) => (
+                                <React.Fragment key={i}>
+                                    {part}
+                                    {i < arr.length - 1 && (
+                                        <span className={`inline-block px-4 py-1 mx-2 border-b-2 font-bold ${isAnswered ? (isCorrect ? 'text-success border-success' : 'text-error border-error') : 'text-primary border-primary min-w-[100px]'}`}>
+                                            {isAnswered ? answers[index].choice : ''}
+                                        </span>
+                                    )}
+                                </React.Fragment>
+                            ))}
+                        </h3>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            {currentOptions.map((opt, i) => {
+                                let btnStyle = "bg-white border-2 border-gray-200 text-navy hover:border-primary hover:bg-blue-50";
+                                if (isAnswered) {
+                                    if (opt === currentQ.a) btnStyle = "bg-success/10 border-success text-success font-bold";
+                                    else if (opt === answers[index].choice) btnStyle = "bg-error/10 border-error text-error line-through opacity-70";
+                                    else btnStyle = "bg-white border-2 border-gray-100 text-gray-400 opacity-50";
+                                }
+                                return (
+                                    <button 
+                                        key={i} 
+                                        disabled={isAnswered}
+                                        onClick={() => handleAnswer(opt)}
+                                        className={`p-4 rounded-xl text-left transition-all text-lg font-medium ${btnStyle}`}
+                                    >
+                                        {opt}
+                                    </button>
+                                );
+                            })}
+                        </div>
+                        
+                        <div className="h-10 mt-6 flex items-center justify-center">
+                            {isAnswered && (
+                                <div className={`text-lg font-bold flex items-center gap-2 ${isCorrect ? 'text-success' : 'text-error'}`}>
+                                    {isCorrect ? <><Icon name="check" /> Correct!</> : <>✗ Try again.</>}
+                                    {!isCorrect && (
+                                         <Button variant="ghost" className="ml-4 text-sm text-primary" onClick={() => {
+                                             const newAnswers = {...answers}; delete newAnswers[index];
+                                             updateState({ answers: newAnswers });
+                                         }}>Try Again</Button>
+                                    )}
+                                </div>
+                            )}
+                        </div>
+                    </Card>
+
+                    <div className="flex justify-between items-center">
+                         <Button variant="secondary" icon="chevronLeft" onClick={() => updateState({ index: Math.max(0, index - 1) })} disabled={index === 0}>Previous</Button>
+                         <Button variant="secondary" icon="reset" onClick={onReset} className="text-gray-500">Restart Quiz</Button>
+                         <Button variant="primary" onClick={() => updateState({ index: Math.min(questions.length - 1, index + 1) })} disabled={index === questions.length - 1}>Next <Icon name="chevronRight" /></Button>
+                    </div>
+                </div>
+            );
+        };
+
+        const Timer = ({ onComplete }) => {
+            const [timeLeft, setTimeLeft] = React.useState(25);
+            const [isRunning, setIsRunning] = React.useState(false);
+
+            React.useEffect(() => {
+                let interval;
+                if (isRunning && timeLeft > 0) {
+                    interval = setInterval(() => setTimeLeft(p => p - 1), 1000);
+                } else if (timeLeft === 0 && isRunning) {
+                    setIsRunning(false);
+                    onComplete();
+                }
+                return () => clearInterval(interval);
+            }, [isRunning, timeLeft]);
+
+            const formatTime = (secs) => {
+                const m = Math.floor(secs / 60);
+                const s = secs % 60;
+                return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+            };
+
+            return (
+                <div className="bg-navy rounded-xl p-6 text-white flex flex-col items-center shadow-lg w-full md:w-64">
+                    <div className="text-sm uppercase tracking-widest text-cyanAccent mb-2 font-semibold">Speed Reading Timer</div>
+                    <div className={`text-6xl font-mono font-bold mb-6 tracking-tight ${timeLeft <= 5 && timeLeft > 0 ? 'text-error animate-pulse' : ''} ${timeLeft === 0 ? 'text-gray-400' : ''}`}>
+                        {formatTime(timeLeft)}
+                    </div>
+                    <div className="flex gap-3 w-full">
+                        <Button variant={isRunning ? "secondary" : "primary"} className="flex-1 !py-2 !px-0" onClick={() => setIsRunning(!isRunning)} disabled={timeLeft === 0}>
+                            {isRunning ? <><Icon name="pause" className="w-4 h-4"/> Pause</> : <><Icon name="play" className="w-4 h-4"/> Start</>}
+                        </Button>
+                        <Button variant="danger" className="flex-1 !py-2 !px-0" onClick={() => { setIsRunning(false); setTimeLeft(25); }}>
+                            <Icon name="reset" className="w-4 h-4"/> Reset
+                        </Button>
+                    </div>
+                </div>
+            );
+        };
+
+        const SpeedReading = ({ onComplete }) => {
+            const [textVisible, setTextVisible] = React.useState(false);
+            const [timerDone, setTimerDone] = React.useState(false);
+
+            const text = "Orion Technologies has a difficult decision to make. Several parts of its IT infrastructure are more than seven years old, and maintenance costs are rising. However, replacing everything this year would use most of the department's infrastructure budget. The IT manager must decide whether to upgrade now or continue using the existing systems for another year.";
+
+            return (
+                <div className="max-w-5xl mx-auto flex flex-col gap-8 md:flex-row mt-4">
+                    <div className="flex-1">
+                        <div className="flex justify-between items-end mb-4">
+                            <div>
+                                <h3 className="text-xl font-bold text-navy">Read Quickly</h3>
+                                <p className="text-gray-500">Focus on the main idea, not every detail.</p>
+                            </div>
+                            <Button variant={textVisible ? "secondary" : "primary"} onClick={() => setTextVisible(!textVisible)} icon={textVisible ? "eyeOff" : "eye"}>
+                                {textVisible ? 'Hide Text' : 'Reveal Text'}
+                            </Button>
+                        </div>
+                        
+                        <Card className={`transition-all duration-500 min-h-[250px] flex items-center justify-center ${textVisible ? 'bg-white' : 'bg-gray-100 border-dashed border-2 border-gray-300'}`}>
+                            {textVisible ? (
+                                <p className="text-2xl leading-relaxed text-navy">{text}</p>
+                            ) : (
+                                <div className="text-gray-400 text-lg font-medium flex items-center gap-2">
+                                    <Icon name="eyeOff" /> Text is hidden. Click Reveal Text to begin.
+                                </div>
+                            )}
+                        </Card>
+
+                        {timerDone && (
+                            <div className="mt-8 p-6 bg-white border-2 border-primary rounded-xl shadow-lg animate-fade-in-up">
+                                <h4 className="font-bold text-navy mb-4 text-lg">GIST QUESTION: What is the main issue?</h4>
+                                <div className="grid gap-3">
+                                    {shuffleArray([
+                                        { t: "The company needs to hire more IT employees.", c: false },
+                                        { t: "The company must decide when to replace aging technology.", c: true },
+                                        { t: "The company wants to move every service to the cloud.", c: false },
+                                        { t: "The company needs to reduce employee technology use.", c: false }
+                                    ]).map((opt, i) => (
+                                        <button key={i} onClick={(e) => {
+                                            if(opt.c) { e.target.className = "p-4 rounded-lg border-2 border-success bg-success/10 text-success font-bold text-left w-full"; onComplete(); }
+                                            else { e.target.className = "p-4 rounded-lg border-2 border-error bg-error/10 text-error line-through text-left w-full opacity-50"; }
+                                        }} className="p-4 rounded-lg border-2 border-gray-200 text-navy hover:bg-gray-50 text-left w-full transition-colors font-medium">
+                                            {opt.t}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                    <div className="md:w-auto w-full flex justify-center">
+                        <div className="sticky top-24">
+                            <Timer onComplete={() => setTimerDone(true)} />
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const MainReading = ({ onComplete }) => {
+            const paragraphs = [
+                "Orion Technologies has a difficult decision to make. Several parts of its IT infrastructure are more than seven years old, and {maintenance costs} are rising. However, replacing everything this year would use most of the department's infrastructure budget. The IT manager must decide whether to {upgrade} now or continue using the existing systems for another year.",
+                "The biggest concern is the company's storage environment. Demand has increased by almost 30% in two years, and the existing system is becoming a {bottleneck}. It still works, but employees have reported slower access during busy periods. The IT team believes the infrastructure may not {keep up with} demand if the company continues growing.",
+                "The IT manager has therefore proposed a three-stage project. Instead of replacing everything immediately, the company would {phase out} its oldest equipment first and {roll out} the new infrastructure gradually. Management could {allocate} part of this year's budget to the first stage and finance the remaining work next year. The manager believes this approach is more {cost-effective} and reduces the risk of major {downtime}.",
+                "There is still some uncertainty. Hardware prices could increase next year, and unexpected technical problems could cause the project to {run over budget}. On the other hand, delaying the entire project creates another risk: an important system could fail before its replacement is ready. Management must therefore balance immediate costs against the longer-term operational risk."
+            ];
+
+            const renderTextWithHighlights = (text) => {
+                const parts = text.split(/(\{.*?\})/g);
+                return parts.map((part, i) => {
+                    if (part.startsWith('{') && part.endsWith('}')) {
+                        const word = part.slice(1, -1);
+                        const def = VOCABULARY.find(v => v.word === word)?.def;
+                        return (
+                            <span key={i} className="relative inline-block vocab-tooltip group">
+                                <button className="font-bold text-primary bg-blue-50 px-1 py-0.5 rounded border-b-2 border-primary hover:bg-blue-100 transition-colors cursor-help">
+                                    {word}
+                                </button>
+                                <span className="tooltip-text absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-64 p-3 bg-navy text-white text-sm rounded-lg shadow-xl z-10 text-left pointer-events-none after:content-[''] after:absolute after:top-full after:left-1/2 after:-translate-x-1/2 after:border-4 after:border-transparent after:border-t-navy">
+                                    <strong className="block text-cyanAccent mb-1 capitalize">{word}</strong>
+                                    {def}
+                                </span>
+                            </span>
+                        );
+                    }
+                    return part;
+                });
+            };
+
+            return (
+                <div className="max-w-4xl mx-auto mt-4">
+                    <Card className="mb-8">
+                        <h2 className="text-3xl font-bold text-navy mb-8 text-center pb-4 border-b border-gray-100">The Infrastructure Decision</h2>
+                        <div className="space-y-6 text-lg leading-relaxed text-gray-700">
+                            {paragraphs.map((p, i) => <p key={i}>{renderTextWithHighlights(p)}</p>)}
+                        </div>
+                    </Card>
+                    <div className="flex justify-end">
+                        <Button variant="primary" onClick={onComplete}>Continue to Comprehension <Icon name="chevronRight" /></Button>
+                    </div>
+                </div>
+            );
+        };
+
+        const ReadingComp = ({ state, updateState, onComplete, onReset }) => {
+            const { index, answers, randomizedOptions } = state;
+            const currentQ = READING_COMP_Q[index];
+            const [showAnswer, setShowAnswer] = React.useState(false);
+            const [localInput, setLocalInput] = React.useState('');
+
+            React.useEffect(() => {
+                setShowAnswer(false);
+                setLocalInput(answers[index]?.input || '');
+            }, [index, answers]);
+
+            // Handle randomization for MC questions
+            let currentOptions = [];
+            if (currentQ.type === 'mc') {
+                if (!randomizedOptions[index]) {
+                     const opts = shuffleArray([currentQ.a, ...currentQ.d]);
+                     updateState({ randomizedOptions: { ...randomizedOptions, [index]: opts } });
+                     return null;
+                }
+                currentOptions = randomizedOptions[index];
+            } else if (currentQ.type === 'tf') {
+                currentOptions = ['True', 'False'];
+            }
+
+            const handleMCAnswer = (opt) => {
+                const isCorrect = opt === currentQ.a;
+                updateState({ answers: { ...answers, [index]: { choice: opt, correct: isCorrect } } });
+                checkCompletion();
+            };
+
+            const handleTextSubmit = () => {
+                updateState({ answers: { ...answers, [index]: { input: localInput, correct: true } } }); // Open answers accepted manually
+                setShowAnswer(true);
+                checkCompletion();
+            };
+
+            const checkCompletion = () => {
+                if (Object.keys(answers).length >= READING_COMP_Q.length - 1) onComplete();
+            };
+
+            const isAnswered = !!answers[index];
+            const isCorrect = isAnswered && answers[index].correct;
+
+            return (
+                <div className="max-w-4xl mx-auto mt-4">
+                     <div className="flex justify-between items-center mb-6">
+                        <span className="text-gray-500 font-medium">Question {index + 1} / {READING_COMP_Q.length}</span>
+                        <span className="px-3 py-1 bg-gray-200 rounded-full text-xs font-bold text-gray-600 uppercase tracking-wide">
+                            {currentQ.type === 'mc' ? 'Multiple Choice' : currentQ.type === 'tf' ? 'True / False' : currentQ.type === 'fill' ? 'Fill in the blank' : 'Open Question'}
+                        </span>
+                    </div>
+
+                    <Card className="mb-8 min-h-[300px] flex flex-col">
+                        <h3 className="text-2xl font-semibold text-navy leading-relaxed mb-8 flex-grow">
+                             {currentQ.type === 'fill' ? (
+                                currentQ.q.split('______').map((part, i, arr) => (
+                                    <React.Fragment key={i}>
+                                        {part}
+                                        {i < arr.length - 1 && (
+                                            <input 
+                                                type="text" 
+                                                value={localInput}
+                                                onChange={(e) => setLocalInput(e.target.value)}
+                                                disabled={isAnswered}
+                                                className={`mx-2 p-1 border-b-2 outline-none font-bold bg-transparent text-center ${isAnswered ? 'border-success text-success' : 'border-primary text-primary focus:border-navy'}`}
+                                                style={{width: Math.max(100, localInput.length * 15) + 'px'}}
+                                            />
+                                        )}
+                                    </React.Fragment>
+                                ))
+                             ) : currentQ.q}
+                        </h3>
+
+                        {(currentQ.type === 'mc' || currentQ.type === 'tf') && (
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                {currentOptions.map((opt, i) => {
+                                    let btnStyle = "bg-white border-2 border-gray-200 text-navy hover:border-primary hover:bg-blue-50";
+                                    if (isAnswered) {
+                                        if (opt === currentQ.a) btnStyle = "bg-success/10 border-success text-success font-bold";
+                                        else if (opt === answers[index].choice) btnStyle = "bg-error/10 border-error text-error line-through opacity-70";
+                                        else btnStyle = "bg-white border-2 border-gray-100 text-gray-400 opacity-50";
+                                    }
+                                    return (
+                                        <button key={i} disabled={isAnswered} onClick={() => handleMCAnswer(opt)} className={`p-4 rounded-xl text-left transition-all text-lg font-medium ${btnStyle}`}>
+                                            {opt}
+                                        </button>
+                                    );
+                                })}
+                            </div>
+                        )}
+
+                        {(currentQ.type === 'open') && (
+                            <div className="flex flex-col gap-4">
+                                <textarea 
+                                    className="w-full p-4 border-2 border-gray-200 rounded-xl resize-none focus:border-primary outline-none transition-colors text-lg"
+                                    rows="3"
+                                    placeholder="Type answer here or discuss with teacher..."
+                                    value={localInput}
+                                    onChange={(e) => setLocalInput(e.target.value)}
+                                    disabled={isAnswered}
+                                />
+                                {!isAnswered ? (
+                                    <div className="flex justify-end gap-3">
+                                        <Button variant="secondary" onClick={() => setShowAnswer(true)} icon="eye">Teacher: Show Suggested</Button>
+                                        <Button variant="primary" onClick={handleTextSubmit} disabled={!localInput.trim()}>Submit</Button>
+                                    </div>
+                                ) : null}
+                            </div>
+                        )}
+
+                         {currentQ.type === 'fill' && !isAnswered && (
+                             <div className="flex justify-end mt-4">
+                                  <Button variant="primary" onClick={handleTextSubmit} disabled={!localInput.trim()}>Submit</Button>
+                             </div>
+                         )}
+
+                        {showAnswer && (currentQ.type === 'open' || currentQ.type === 'fill') && (
+                            <div className="mt-6 p-4 bg-green-50 border border-green-200 rounded-lg text-success font-medium">
+                                <span className="block text-xs uppercase tracking-wider mb-1 font-bold">Suggested Answer:</span>
+                                {currentQ.a}
+                            </div>
+                        )}
+
+                        {isAnswered && (currentQ.type === 'mc' || currentQ.type === 'tf') && !isCorrect && (
+                             <div className="mt-6 flex justify-center">
+                                 <Button variant="ghost" className="text-sm text-primary" onClick={() => {
+                                     const newAnswers = {...answers}; delete newAnswers[index];
+                                     updateState({ answers: newAnswers });
+                                 }}>Try Again</Button>
+                             </div>
+                        )}
+                    </Card>
+
+                    <div className="flex justify-between items-center">
+                         <Button variant="secondary" icon="chevronLeft" onClick={() => updateState({ index: Math.max(0, index - 1) })} disabled={index === 0}>Previous</Button>
+                         <Button variant="secondary" icon="reset" onClick={onReset} className="text-gray-500">Restart Quiz</Button>
+                         <Button variant="primary" onClick={() => updateState({ index: Math.min(READING_COMP_Q.length - 1, index + 1) })} disabled={index === READING_COMP_Q.length - 1}>Next <Icon name="chevronRight" /></Button>
+                    </div>
+                </div>
+            );
+        };
+
+        const GrammarFocus = ({ onComplete }) => {
+            return (
+                <div className="max-w-4xl mx-auto mt-4 space-y-8">
+                    <Card>
+                        <h2 className="text-3xl font-bold text-navy mb-2">First Conditional</h2>
+                        <p className="text-xl text-gray-500 mb-8">Decisions & Consequences</p>
+                        
+                        <div className="bg-blue-50 p-6 rounded-xl border border-blue-100 mb-8 flex items-start gap-4">
+                            <div className="mt-1 bg-primary text-white p-2 rounded-full"><Icon name="home" /></div>
+                            <div>
+                                <h4 className="font-bold text-navy text-lg mb-1">Usage</h4>
+                                <p className="text-gray-700">Managers use this structure to discuss realistic future consequences of current decisions.</p>
+                            </div>
+                        </div>
+
+                        <div className="space-y-6">
+                            {/* Table Rows */}
+                            {[
+                                { title: "LIKELY CONSEQUENCE", if: "If + present simple", res: "will + base verb", ex: "If we delay the upgrade, costs will increase.", color: "primary" },
+                                { title: "POSSIBLE CONSEQUENCE", if: "If + present simple", res: "may + base verb", ex: "If demand increases, performance may suffer.", color: "purpleAccent" },
+                                { title: "POSSIBLE RESULT / OPTION", if: "If + present simple", res: "could + base verb", ex: "If a server fails, we could lose access.", color: "teal" },
+                                { title: "NEGATIVE CONDITION", if: "If + don't/doesn't + verb", res: "will/may/could", ex: "If we don't upgrade, the system may become unstable.", color: "error" }
+                            ].map((row, i) => (
+                                <div key={i} className="flex flex-col md:flex-row border border-gray-200 rounded-xl overflow-hidden">
+                                    <div className={`md:w-48 p-4 bg-gray-50 flex items-center justify-center text-center font-bold text-gray-700 border-b md:border-b-0 md:border-r border-gray-200`}>
+                                        {row.title}
+                                    </div>
+                                    <div className="flex-1 flex flex-col md:flex-row">
+                                        <div className="p-4 flex-1 flex items-center justify-center text-center font-mono text-sm bg-gray-100 border-b md:border-b-0 border-gray-200">
+                                            {row.if} <span className="mx-2 text-gray-400">+</span> {row.res}
+                                        </div>
+                                        <div className="p-4 flex-[2] flex items-center bg-white text-navy font-medium italic">
+                                            "{row.ex}"
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </Card>
+
+                    <div className="grid md:grid-cols-2 gap-8">
+                        <Card className="bg-red-50 border-error/20">
+                            <h4 className="flex items-center gap-2 text-error font-bold mb-4 uppercase tracking-wide text-sm">
+                                <Icon name="warning" /> Common Mistake
+                            </h4>
+                            <div className="space-y-4">
+                                <div>
+                                    <span className="bg-error text-white text-xs px-2 py-1 rounded font-bold mr-2">DON'T SAY</span>
+                                    <span className="text-gray-500 line-through">"If demand will increase..."</span>
+                                </div>
+                                <div>
+                                    <span className="bg-success text-white text-xs px-2 py-1 rounded font-bold mr-2">SAY</span>
+                                    <span className="text-navy font-bold">"If demand increases..."</span>
+                                </div>
+                            </div>
+                            <div className="mt-4 pt-4 border-t border-red-100 text-sm font-bold text-navy text-center">
+                                IF CLAUSE = PRESENT SIMPLE
+                            </div>
+                        </Card>
+
+                        <Card className="bg-blue-50 border-primary/20">
+                             <h4 className="text-primary font-bold mb-4 uppercase tracking-wide text-sm text-center">
+                                Modal Meanings
+                            </h4>
+                            <ul className="space-y-3 text-sm">
+                                <li className="flex justify-between items-center bg-white p-2 rounded shadow-sm"><strong className="text-navy text-lg w-20">WILL</strong> <span className="text-gray-600 flex-1 text-right">stronger / expected consequence</span></li>
+                                <li className="flex justify-between items-center bg-white p-2 rounded shadow-sm"><strong className="text-purpleAccent text-lg w-20">MAY</strong> <span className="text-gray-600 flex-1 text-right">possible consequence</span></li>
+                                <li className="flex justify-between items-center bg-white p-2 rounded shadow-sm"><strong className="text-teal text-lg w-20">COULD</strong> <span className="text-gray-600 flex-1 text-right">possible result or option</span></li>
+                            </ul>
+                        </Card>
+                    </div>
+
+                    <div className="flex justify-center mt-8">
+                        <Button variant="primary" onClick={onComplete} className="px-12">Start Practice <Icon name="chevronRight" /></Button>
+                    </div>
+                </div>
+            );
+        };
+
+        const GrammarPractice = ({ state, updateState, onComplete, onReset }) => {
+            // Re-using the logic from Vocab Quiz, just passing different data
+            return <QuizEngine questions={GRAMMAR_PRACTICE_Q} state={state} updateState={updateState} onComplete={onComplete} onReset={onReset} />;
+        };
+
+        const SpeakingChallenge = ({ onComplete }) => {
+            const [index, setIndex] = React.useState(0);
+            const [showFinal, setShowFinal] = React.useState(false);
+
+            if (showFinal) {
+                return (
+                    <div className="max-w-6xl mx-auto mt-4 grid lg:grid-cols-3 gap-8">
+                        <div className="lg:col-span-2 space-y-6">
+                            <Card className="bg-navy text-white">
+                                <h2 className="text-3xl font-bold text-cyanAccent mb-4">Final Decision</h2>
+                                <p className="text-xl text-gray-300 mb-8">Return to Orion Technologies and make a recommendation to management.</p>
+                                
+                                <div className="space-y-4 mb-8">
+                                    {['A — Upgrade everything now', 'B — Upgrade gradually', 'C — Wait another year'].map(opt => (
+                                        <div key={opt} className="p-4 rounded-xl border-2 border-white/20 bg-white/5 font-bold text-xl hover:bg-white/10 transition-colors cursor-pointer">
+                                            {opt}
+                                        </div>
+                                    ))}
+                                </div>
+                            </Card>
+
+                            <Card className="border-primary border-t-4">
+                                <h3 className="text-xl font-bold text-navy mb-4 flex items-center gap-2">
+                                    <Icon name="check" className="text-primary"/> The Challenge
+                                </h3>
+                                <p className="text-lg text-gray-700 mb-4">Explain your recommendation using:</p>
+                                <ul className="space-y-3 mb-6 bg-gray-50 p-4 rounded-lg">
+                                    <li className="flex items-center gap-3 font-medium"><div className="w-6 h-6 rounded bg-success/20 text-success flex items-center justify-center text-sm">✓</div> at least FIVE expressions from the vocabulary bank</li>
+                                    <li className="flex items-center gap-3 font-medium"><div className="w-6 h-6 rounded bg-primary/20 text-primary flex items-center justify-center text-sm">✓</div> at least TWO First Conditional sentences</li>
+                                </ul>
+                                <textarea className="w-full h-32 p-4 border border-gray-200 rounded-lg resize-none" placeholder="Draft your answer here (optional)..."></textarea>
+                            </Card>
+                        </div>
+
+                        <div>
+                            <Card className="sticky top-24 bg-blue-50/50">
+                                <h3 className="font-bold text-navy mb-4 uppercase text-sm tracking-widest text-center border-b border-gray-200 pb-2">Vocabulary Bank</h3>
+                                <div className="flex flex-wrap gap-2 justify-center">
+                                    {VOCABULARY.map(v => (
+                                        <span key={v.word} className="px-3 py-1.5 bg-white border border-gray-200 rounded shadow-sm text-sm font-semibold text-primary">{v.word}</span>
+                                    ))}
+                                </div>
+                            </Card>
+                        </div>
+                    </div>
+                );
+            }
+
+            return (
+                <div className="max-w-4xl mx-auto mt-10 flex flex-col items-center">
+                    <div className="text-gray-500 font-medium mb-6 uppercase tracking-wider text-sm">Conversation Card {index + 1} / {SPEAKING_Q.length}</div>
+                    
+                    <Card className="w-full min-h-[400px] flex items-center justify-center text-center px-12 relative overflow-hidden group">
+                        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyanAccent via-primary to-purpleAccent"></div>
+                        <h2 className="text-3xl md:text-4xl font-bold text-navy leading-relaxed break-words whitespace-pre-wrap">
+                            {SPEAKING_Q[index]}
+                        </h2>
+                    </Card>
+
+                    <div className="flex flex-wrap justify-center gap-4 w-full mt-8">
+                        <Button variant="secondary" icon="chevronLeft" onClick={() => setIndex(p => Math.max(0, p - 1))} disabled={index === 0}>Previous</Button>
+                        <Button variant="ghost" onClick={() => setIndex(Math.floor(Math.random() * SPEAKING_Q.length))} className="border border-gray-200 bg-white shadow-sm">Random Question</Button>
+                        <Button variant="secondary" onClick={() => setIndex(p => Math.min(SPEAKING_Q.length - 1, p + 1))} disabled={index === SPEAKING_Q.length - 1}>Next <Icon name="chevronRight" /></Button>
+                    </div>
+
+                    <div className="mt-16 w-full flex justify-end">
+                        <Button variant="primary" onClick={() => { setShowFinal(true); onComplete(); }}>Go to Final Decision Task <Icon name="chevronRight" /></Button>
+                    </div>
+                </div>
+            );
+        };
+
+
+        const App = () => {
+            const [sidebarOpen, setSidebarOpen] = React.useState(true);
+            const [currentSection, setCurrentSection] = React.useState('Overview');
+            const [completedSections, setCompletedSections] = React.useState(new Set());
+            const [resetModalOpen, setResetModalOpen] = React.useState(false);
+
+            // Persistent states for interactive sections
+            const [vocabState, setVocabState] = React.useState({ index: 0, answers: {}, randomizedOptions: {} });
+            const [readingState, setReadingState] = React.useState({ index: 0, answers: {}, randomizedOptions: {} });
+            const [grammarState, setGrammarState] = React.useState({ index: 0, answers: {}, randomizedOptions: {} });
+
+            const markComplete = (section) => {
+                setCompletedSections(prev => {
+                    const next = new Set(prev);
+                    next.add(section);
+                    return next;
+                });
+            };
+
+            const resetSection = (sectionName) => {
+                if (sectionName === 'Vocabulary Practice') setVocabState({ index: 0, answers: {}, randomizedOptions: {} });
+                if (sectionName === 'Reading Comprehension') setReadingState({ index: 0, answers: {}, randomizedOptions: {} });
+                if (sectionName === 'Grammar Practice') setGrammarState({ index: 0, answers: {}, randomizedOptions: {} });
+            };
+
+            const resetEntireLesson = () => {
+                setCompletedSections(new Set());
+                setVocabState({ index: 0, answers: {}, randomizedOptions: {} });
+                setReadingState({ index: 0, answers: {}, randomizedOptions: {} });
+                setGrammarState({ index: 0, answers: {}, randomizedOptions: {} });
+                setCurrentSection('Overview');
+                setResetModalOpen(false);
+            };
+
+            const navigate = (dir) => {
+                const idx = LESSON_SECTIONS.indexOf(currentSection);
+                if (dir === 'next' && idx < LESSON_SECTIONS.length - 1) setCurrentSection(LESSON_SECTIONS[idx + 1]);
+                if (dir === 'prev' && idx > 0) setCurrentSection(LESSON_SECTIONS[idx - 1]);
+            };
+
+            const renderSection = () => {
+                switch(currentSection) {
+                    case 'Overview':
+                        return (
+                            <div className="flex flex-col items-center justify-center h-[70vh] text-center max-w-2xl mx-auto space-y-6 animate-fade-in-up">
+                                <div className="w-20 h-20 bg-primary/10 rounded-2xl flex items-center justify-center text-primary mb-4">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-10 h-10"><path strokeLinecap="round" strokeLinejoin="round" d="M14.25 9.75L16.5 12l-2.25 2.25m-4.5 0L7.5 12l2.25-2.25M6 20.25h12A2.25 2.25 0 0020.25 18V6A2.25 2.25 0 0018 3.75H6A2.25 2.25 0 003.75 6v12A2.25 2.25 0 006 20.25z" /></svg>
+                                </div>
+                                <h1 className="text-4xl md:text-5xl font-bold text-navy">Upgrade Now or Wait?</h1>
+                                <h2 className="text-2xl text-gray-500 font-light">Managing Aging IT Infrastructure</h2>
+                                <div className="flex gap-4 mt-8">
+                                    <span className="px-4 py-2 bg-white rounded-full text-sm font-bold text-primary shadow-sm border border-gray-100">Level: B1</span>
+                                    <span className="px-4 py-2 bg-white rounded-full text-sm font-bold text-primary shadow-sm border border-gray-100">IT English</span>
+                                </div>
+                                <p className="text-gray-600 mt-6 max-w-lg leading-relaxed">
+                                    In this lesson, you will discuss infrastructure projects, budgets, and operational risk. You will practice vocabulary for technology upgrades and use the First Conditional to discuss consequences.
+                                </p>
+                                <Button variant="primary" onClick={() => navigate('next')} className="mt-8 px-10 py-4 text-lg shadow-lg">Start Lesson <Icon name="chevronRight"/></Button>
+                            </div>
+                        );
+                    case 'Warm-up': return <WarmUp onComplete={() => markComplete('Warm-up')} />;
+                    case 'Vocabulary': return <Vocabulary onComplete={() => markComplete('Vocabulary')} />;
+                    case 'Vocabulary Practice': return <QuizEngine questions={VOCAB_PRACTICE_Q} state={vocabState} updateState={(s) => setVocabState({...vocabState, ...s})} onComplete={() => markComplete('Vocabulary Practice')} onReset={() => resetSection('Vocabulary Practice')} />;
+                    case 'Speed Reading': return <SpeedReading onComplete={() => markComplete('Speed Reading')} />;
+                    case 'Main Reading': return <MainReading onComplete={() => { markComplete('Main Reading'); navigate('next'); }} />;
+                    case 'Reading Comprehension': return <ReadingComp state={readingState} updateState={(s) => setReadingState({...readingState, ...s})} onComplete={() => markComplete('Reading Comprehension')} onReset={() => resetSection('Reading Comprehension')} />;
+                    case 'Grammar Focus': return <GrammarFocus onComplete={() => { markComplete('Grammar Focus'); navigate('next'); }} />;
+                    case 'Grammar Practice': return <GrammarPractice state={grammarState} updateState={(s) => setGrammarState({...grammarState, ...s})} onComplete={() => markComplete('Grammar Practice')} onReset={() => resetSection('Grammar Practice')} />;
+                    case 'Speaking Challenge': return <SpeakingChallenge onComplete={() => markComplete('Speaking Challenge')} />;
+                    default: return <div>Section not found</div>;
+                }
+            };
+
+            const progressPercentage = (completedSections.size / (LESSON_SECTIONS.length - 1)) * 100; // -1 to exclude Overview
+
+            return (
+                <div className="flex h-screen overflow-hidden bg-bgLight font-sans">
+                    {/* Sidebar */}
+                    <div className={`${sidebarOpen ? 'w-72 translate-x-0' : 'w-0 -translate-x-full'} transition-all duration-300 ease-in-out bg-navy text-white flex flex-col fixed md:relative z-40 h-full`}>
+                        <div className="p-6 border-b border-white/10 flex justify-between items-center whitespace-nowrap overflow-hidden">
+                            <div>
+                                <div className="text-cyanAccent text-xs font-bold tracking-widest mb-1">B1 • IT ENGLISH</div>
+                                <div className="font-semibold text-lg truncate">Upgrade or Wait?</div>
+                            </div>
+                            <button className="md:hidden text-white/50 hover:text-white" onClick={() => setSidebarOpen(false)}><Icon name="chevronLeft" /></button>
+                        </div>
+                        <div className="flex-1 overflow-y-auto py-4 custom-scrollbar">
+                            <ul className="space-y-1 px-3">
+                                {LESSON_SECTIONS.map((section, idx) => {
+                                    const isActive = currentSection === section;
+                                    const isCompleted = completedSections.has(section);
+                                    return (
+                                        <li key={section}>
+                                            <button 
+                                                onClick={() => { setCurrentSection(section); if(window.innerWidth < 768) setSidebarOpen(false); }}
+                                                className={`w-full flex items-center justify-between text-left px-4 py-3 rounded-lg transition-colors whitespace-nowrap overflow-hidden
+                                                    ${isActive ? 'bg-primary text-white font-medium shadow-md' : 'text-gray-300 hover:bg-white/10'}`}
+                                            >
+                                                <span className="truncate">{section}</span>
+                                                {isCompleted && !isActive && <span className="text-success"><Icon name="check" className="w-4 h-4" /></span>}
+                                            </button>
+                                        </li>
+                                    );
+                                })}
+                            </ul>
+                        </div>
+                        <div className="p-6 border-t border-white/10 whitespace-nowrap overflow-hidden">
+                            <div className="flex justify-between text-xs text-gray-400 mb-2">
+                                <span>Progress</span>
+                                <span>{Math.round(progressPercentage)}%</span>
+                            </div>
+                            <div className="h-2 w-full bg-white/10 rounded-full overflow-hidden">
+                                <div className="h-full bg-success transition-all duration-500" style={{width: `${progressPercentage}%`}}></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Main Content Area */}
+                    <div className="flex-1 flex flex-col h-full overflow-hidden relative">
+                        {/* Overlay for mobile sidebar */}
+                        {sidebarOpen && <div className="md:hidden fixed inset-0 bg-navy/50 z-30" onClick={() => setSidebarOpen(false)}></div>}
+                        
+                        {/* Topbar */}
+                        <header className="bg-white h-16 border-b border-gray-200 flex items-center justify-between px-4 lg:px-8 shrink-0 z-20">
+                            <div className="flex items-center gap-4">
+                                <button onClick={() => setSidebarOpen(!sidebarOpen)} className="p-2 rounded-lg text-gray-500 hover:bg-gray-100 transition-colors">
+                                    <Icon name="menu" />
+                                </button>
+                                <h1 className="font-bold text-navy text-xl hidden sm:block">{currentSection}</h1>
