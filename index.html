@@ -998,3 +998,33 @@
                                     <Icon name="menu" />
                                 </button>
                                 <h1 className="font-bold text-navy text-xl hidden sm:block">{currentSection}</h1>
+                            </div>
+                            <div className="flex items-center gap-3">
+                                <Button variant="ghost" onClick={() => setCurrentSection('Overview')} className="hidden sm:flex" icon="home">Home</Button>
+                                <div className="w-px h-6 bg-gray-200 mx-2 hidden sm:block"></div>
+                                <Button variant="danger" className="!bg-transparent !text-error hover:!bg-red-50 text-sm py-2 px-3" onClick={() => setResetModalOpen(true)}>Reset Lesson</Button>
+                            </div>
+                        </header>
+
+                        {/* Content Scroll Area */}
+                        <main className="flex-1 overflow-y-auto p-4 lg:p-8 relative">
+                            {renderSection()}
+                        </main>
+                    </div>
+
+                    <Modal 
+                        isOpen={resetModalOpen}
+                        title="Reset Entire Lesson?"
+                        message="This will clear all your progress, answers, and completed sections. Are you sure?"
+                        onConfirm={resetEntireLesson}
+                        onCancel={() => setResetModalOpen(false)}
+                    />
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
